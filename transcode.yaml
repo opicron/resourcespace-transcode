@@ -1,0 +1,6 @@
+name    : transcode
+author  : Robbert Langezaal
+version : 0.1
+desc    : Enables transcoding videos
+config_url: /plugins/transcode/pages/setup.php
+default_priority: 998
