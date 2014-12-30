@@ -1,7 +1,7 @@
 Plugin to transcode videos and add them as alternative files
 
 Note:
-To make the native upload code in resourcespace function we have to edit the resourcespace code as such.
+To make the native upload code in resourcespace function we have to edit the resourcespace code as such. 
 
 resource_functions.php:
 -$result=move_uploaded_file($processfile['tmp_name'], $path);
