@@ -314,6 +314,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'dotranscode')
 
 			//cropdetect			
 			$result = exec($ffmpeg_fullpath." -i ".$input." -ss ".$time[0]." -to ".$time[1]." -vf cropdetect -f null - 2>&1 | awk '/crop/ { print \$NF }' | tail -1");
+
+			//this will fail when ffmpeg 1.0 (without -to option) is used
 			if ($result!="")
 			{
 				$return_array['ffmpeg']['cropabort'] = false;
@@ -321,7 +323,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'dotranscode')
 				$cropvalue = $tmparr[1];
 				$cropvalue = '-filter:v crop='.$cropvalue;				
 			} else {
-				// no crop result
+				// no crop result (old ffmpeg?)
 				$return_array['ffmpeg']['cropabort'] = true;
 
 				//run cmd again log to file
@@ -332,8 +334,6 @@ if (isset($_POST['action']) && $_POST['action'] == 'dotranscode')
 
 				//check log file why proces is not running..
 				$line = get_last_line($logfile);
-
-				//if (preg_match("/already exists/i", $line))
 				$return_array['ffmpeg']['reason'] = $line;
 			}
 		}
