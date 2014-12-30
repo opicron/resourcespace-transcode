@@ -178,6 +178,7 @@ function check_access(){
 	}		
 }
 
+
 //**
 // GET DURATION
 //**
@@ -311,11 +312,30 @@ if (isset($_POST['action']) && $_POST['action'] == 'dotranscode')
 		{
 			$time = explode(';', $_POST['autocropseek']);
 
-			//cropdetect
+			//cropdetect			
 			$result = exec($ffmpeg_fullpath." -i ".$input." -ss ".$time[0]." -to ".$time[1]." -vf cropdetect -f null - 2>&1 | awk '/crop/ { print \$NF }' | tail -1");
-			$tmparr = explode('crop=',$result); 
-			$cropvalue = $tmparr[1]; 
-			$cropvalue = '-filter:v crop='.$cropvalue;
+			if ($result!="")
+			{
+				$return_array['ffmpeg']['cropabort'] = false;
+				$tmparr = explode('crop=',$result); 
+				$cropvalue = $tmparr[1];
+				$cropvalue = '-filter:v crop='.$cropvalue;				
+			} else {
+				// no crop result
+				$return_array['ffmpeg']['cropabort'] = true;
+
+				//run cmd again log to file
+				$result = exec($ffmpeg_fullpath." -i ".$input." -ss ".$time[0]." -to ".$time[1]." -vf cropdetect -f null 1> ".$logfile." - 2>&1");
+
+				// wait until all data is written to output file
+				sleep(1);
+
+				//check log file why proces is not running..
+				$line = get_last_line($logfile);
+
+				//if (preg_match("/already exists/i", $line))
+				$return_array['ffmpeg']['reason'] = $line;
+			}
 		}
 		
 		// finalize trancode command

@@ -562,7 +562,13 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'dotranscode')
 			    		{
 			    			//show progress bar
 							jQuery("#progressBar").fadeIn(2000);
-							jQuery("#test").html('<p>:: Transcoding video&nbsp;&nbsp;&nbsp;</p>');			    			
+
+							var cropadd = "";
+							//return visual for autocrop abort
+							if (data.ffmpeg.cropabort=="true")
+								cropadd = " [w/o autocrop: "+data.ffmpeg.reason+"] ";
+
+							jQuery("#test").html('<p>:: Transcoding video'+cropadd+'&nbsp;&nbsp;&nbsp;</p>');
 			    		}
 
 			    		if (jQuery("#progressBar").is(':visible'))
